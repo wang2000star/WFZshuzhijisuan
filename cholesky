@@ -1,0 +1,27 @@
+%平方根法分解Ax=b
+%原理：PA=LU,U=L',Ly=b,Ux=y
+clc
+clear
+A=[11 -1 3; -1 8 -5; 3 -5 11];%系数矩阵
+b=[3 10 4]';%常数项列向量
+n=length(A);%系数矩阵的阶数
+for k=1:n
+    A(k,k)=A(k,k)^(0.5);  A(k+1:n,k)=A(k+1:n,k)/A(k,k);
+    for j=k+1:n
+        A(j:n,j)=A(j:n,j)-(A(j:n,k)*A(j,k));
+    end
+end
+L=tril(A,0);%提取下三角
+U=L';%上三角。   
+%前代法求解下三角
+for j=1:n-1
+   b(j)=b(j)/L(j,j); b(j+1:n)=b(j+1:n)-(b(j)*L(j+1:n,j));
+end
+b(n)=b(n)/L(n,n);
+%回代法求解上三角
+y=b;
+for j=n:-1:2
+   y(j)=y(j)/U(j,j); y(1:j-1)=y(1:j-1)-(y(j)*U(1:j-1,j));
+end
+y(1)=y(1)/U(1,1);
+x=y
